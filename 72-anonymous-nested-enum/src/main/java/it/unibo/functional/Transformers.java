@@ -28,10 +28,7 @@ public final class Transformers {
      * @param <I> input elements type
      * @param <O> output elements type
      */
-    public static <I, O> List<O> flattenTransform(
-        final Iterable<? extends I> base,
-        final Function<I, ? extends Collection<? extends O>> transformer
-    ) {
+    public static <I, O> List<O> flattenTransform(final Iterable<? extends I> base, final Function<I, ? extends Collection<? extends O>> transformer) {
         final var result = new ArrayList<O>();
         for (final I input : Objects.requireNonNull(base, "The base iterable cannot be null")) {
             result.addAll(transformer.call(input));
@@ -54,6 +51,7 @@ public final class Transformers {
      * @param <O> output elements type
      */
     public static <I, O> List<O> transform(final Iterable<I> base, final Function<I, O> transformer) {
+        //final var result = flatten(base, Function<I, )
         return null;
     }
 
