@@ -1,6 +1,5 @@
 package it.unibo.inner.impl;
 
-import java.lang.reflect.Array;
 import java.util.Iterator;
 import java.util.List;
 
@@ -42,7 +41,13 @@ public class IterableWithPolicyImpl<T> implements IterableWithPolicy<T>{
 
         @Override
         public boolean hasNext() {
-            return (index + 1) <= elem.size();
+            while((index + 1) <= elem.size()) {
+                if(pre.test(elem.get(index))) {
+                    return true;
+                }
+                index ++;
+            }
+            return false;
         }
 
         @Override
