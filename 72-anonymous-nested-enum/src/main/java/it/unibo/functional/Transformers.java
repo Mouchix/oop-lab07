@@ -74,18 +74,7 @@ public final class Transformers {
      * @param <I> type of the collection elements
      */
     public static <I> List<? extends I> flatten(final Iterable<? extends Collection<? extends I>> base) {
-        final var temp = new ArrayList<I>();
-
-        for(var v: base){
-            temp.addAll(v);
-        }
-
-        return flattenTransform(temp, new Function<I, Collection<? extends I>>() {
-            @Override
-            public Collection<? extends I> call(I input) {
-                return Function.identity().call(input);
-            }
-        });
+        return flattenTransform(base, Function.identity());
     }
 
     /**
@@ -124,6 +113,13 @@ public final class Transformers {
      * @param <I> elements type
      */
     public static <I> List<I> reject(final Iterable<I> base, final Function<I, Boolean> test) {
-        return select(base, test);
+        return select(base, new Function<I,Boolean>() {
+
+            @Override
+            public Boolean call(I input) {
+                return !test.call(input);
+            }
+            
+        });
     }
 }

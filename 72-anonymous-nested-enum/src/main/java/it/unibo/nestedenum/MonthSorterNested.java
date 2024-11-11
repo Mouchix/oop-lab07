@@ -1,13 +1,15 @@
 package it.unibo.nestedenum;
 
 import java.util.Comparator;
-import java.util.Locale;
 import java.util.Objects;
 
 /**
  * Implementation of {@link MonthSorter}.
  */
 public final class MonthSorterNested implements MonthSorter {
+
+    private static final Comparator<String> BY_DAYS = new SortByDate();
+    private static final Comparator<String> BY_ORDER = new SortByMonthOrder();
 
     public enum Month{
         GENNAIO("Gennaio",31),
@@ -39,26 +41,65 @@ public final class MonthSorterNested implements MonthSorter {
             this.nDays = days;
         }
 
-        public Month fromString(String month){
-            month.toLowerCase();
-            Month result;
-            for(Month m: Month.values()){
-                if(m.getActualName().equals(month)){
-                    result = m;
+        public static Month fromString(String month){
+            Objects.requireNonNull(month);
+
+            try {
+                return valueOf(month);
+            } catch (IllegalArgumentException ex) {
+                Month result = null;
+                for(Month m: values()){
+                    if(m.actualName.toLowerCase().startsWith(month.toLowerCase())){
+                        if(result != null){
+                            throw new IllegalArgumentException("Ambigous search for the string: " + month, ex);
+                        }
+
+                        result = m;
+                    }
                 }
+
+                if(result == null) {
+                    throw new IllegalArgumentException("No match found for value: " + month, ex);
+                }
+                
+                return result;
             }
-            return result;
         }
     }
 
 
     @Override
     public Comparator<String> sortByDays() {
-        return null;
+        return BY_DAYS;
     }
 
     @Override
     public Comparator<String> sortByOrder() {
-        return null;
+        return BY_ORDER;
+    }
+
+    private static class SortByMonthOrder implements Comparator<String>{
+
+        @Override
+        public int compare(String o1, String o2) {
+            final Month m1 = Month.fromString(o1);
+            final Month m2 = Month.fromString(o2);
+
+            return m1.compareTo(m2);
+
+        }
+
+    }
+
+    private static class SortByDate implements Comparator<String>{
+
+        @Override
+        public int compare(String o1, String o2) {
+            final Month m1 = Month.fromString(o1);
+            final Month m2 = Month.fromString(o2);
+
+            return Integer.compare(m1.getnDays(), m2.getnDays());
+        }
+
     }
 }
